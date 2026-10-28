@@ -92,7 +92,7 @@ demo-location/startup GPS race.
 | Android assemble | `BUILD SUCCESSFUL` |
 | Android lint | passes, 0 errors |
 | Web JS syntax | clean |
-| APK | `dist/AR_Horizon-0.1.0-debug.apk`, 84.3 MB |
+| APK | `dist/AR_Horizon-0.1.0-debug.apk`, 83.8 MB |
 | Native lib in APK | SHA-256 matches `jniLibs` |
 
 ## Residual risks (not code regressions)
