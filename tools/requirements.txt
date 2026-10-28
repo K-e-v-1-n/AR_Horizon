@@ -1,0 +1,9 @@
+numpy>=2.2
+pillow>=11
+rasterio>=1.4
+zstandard>=0.23
+fastapi>=0.115
+uvicorn[standard]>=0.34
+httpx>=0.28
+pytest>=8
+requests>=2.32

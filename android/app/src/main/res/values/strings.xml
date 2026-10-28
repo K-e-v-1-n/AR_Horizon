@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AR_Horizon</string>
+    <string name="camera_permission_rationale">AR_Horizon needs the camera to draw labels over the view you are looking at.</string>
+    <string name="location_permission_rationale">Your position is used to compute distances and the horizon. It never leaves the device.</string>
+    <string name="ar_required">This device does not support ARCore. Compass mode still works.</string>
+</resources>

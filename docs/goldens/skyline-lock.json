@@ -1,0 +1,65 @@
+{
+  "method": "synthetic camera frames from the same DEM silhouette; boundary extraction mirrors SkylineSampler.kt; fit is C++ vt_fit_skyline",
+  "viewpoint": {
+    "lat": 45.98331,
+    "lon": 7.7847,
+    "heading": 262.0,
+    "pitch": 4.0,
+    "hfov": 70
+  },
+  "dll": "core\\build\\vantage_core.dll",
+  "results": [
+    {
+      "injected_error_deg": 4.0,
+      "expected_offset_deg": 4.0,
+      "recovered_offset_deg": 3.95,
+      "error_deg": 0.05,
+      "score": 0.9499,
+      "samples": 160,
+      "span_deg": 69.66,
+      "vertical_residual_deg": -0.495
+    },
+    {
+      "injected_error_deg": -3.2,
+      "expected_offset_deg": -3.1999999999999886,
+      "recovered_offset_deg": -3.2,
+      "error_deg": 0.0,
+      "score": 0.9478,
+      "samples": 160,
+      "span_deg": 69.66,
+      "vertical_residual_deg": -0.508
+    },
+    {
+      "injected_error_deg": 0.0,
+      "expected_offset_deg": 0.0,
+      "recovered_offset_deg": 0.05,
+      "error_deg": 0.05,
+      "score": 0.956,
+      "samples": 160,
+      "span_deg": 69.66,
+      "vertical_residual_deg": -0.481
+    },
+    {
+      "injected_error_deg": 7.1,
+      "expected_offset_deg": 7.099999999999994,
+      "recovered_offset_deg": 7.2,
+      "error_deg": 0.1,
+      "score": 0.971,
+      "samples": 160,
+      "span_deg": 69.66,
+      "vertical_residual_deg": -0.496
+    },
+    {
+      "injected_error_deg": -7.8,
+      "expected_offset_deg": -7.800000000000011,
+      "recovered_offset_deg": -7.85,
+      "error_deg": 0.05,
+      "score": 0.9556,
+      "samples": 160,
+      "span_deg": 69.66,
+      "vertical_residual_deg": -0.495
+    }
+  ],
+  "passed": 5,
+  "total": 5
+}

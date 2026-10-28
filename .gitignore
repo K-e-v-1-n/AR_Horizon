@@ -1,0 +1,46 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Toolchains and caches
+.tools/
+data/cache/
+data/goldens/
+*.part
+
+# Android/Gradle
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+*.iml
+.cxx/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# The bundled demo pack is intentionally not ignored: the APK needs it and it
+# is the reproducible output of tools/build_pack.py.
+
+# Optional local service pack cache (server/prepare.ps1 copies it from assets)
+server/data/packs/
+
+# Build outputs: the APK is reproducible with build_apk.ps1 / CI
+dist/
+android/app/src/main/jniLibs/
+data/tmp/
+
+# OpenChamber browser captures
+.openchamber/
+
+# Native build products
+core/build/
+*.obj
+*.lib
+*.exp
+*.dll

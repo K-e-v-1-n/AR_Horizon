@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05090d">
+<title>AR_Horizon — desktop field simulator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <canvas id="scene" aria-label="AR_Horizon terrain panorama with labels"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <header class="top">
+    <div class="brand">
+      <div class="wordmark">AR_HORIZON</div>
+      <div class="kicker">DESKTOP FIELD SIMULATOR</div>
+      <div class="statusline">
+        <span class="chip"><span class="dot"></span><span id="mode">terrain-locked</span></span>
+        <span class="chip quiet" id="offlineChip">offline</span>
+      </div>
+    </div>
+    <div class="viewpick">
+      <label for="viewpoint">VIEWPOINT</label>
+      <select id="viewpoint"></select>
+    </div>
+  </header>
+
+  <div class="tape" aria-hidden="true">
+    <canvas id="tape"></canvas>
+    <div class="headingText" id="headingText">265° W</div>
+  </div>
+  <div class="reticle" aria-hidden="true"></div>
+
+  <section id="info" class="panel info hidden" aria-live="polite">
+    <button class="close" data-act="close-info" aria-label="Close">×</button>
+    <div class="eyebrow" id="infoKind">PEAK</div>
+    <h2 id="infoName">—</h2>
+    <div class="local" id="infoLocal"></div>
+    <div class="stats">
+      <div><span>DISTANCE</span><strong id="infoDist">—</strong></div>
+      <div><span>BEARING</span><strong id="infoAz">—</strong></div>
+      <div><span>ELEVATION</span><strong id="infoEle">—</strong></div>
+    </div>
+    <p id="infoNote" class="note"></p>
+    <p id="infoDesc" class="desc"></p>
+    <div class="foot" id="infoSource"></div>
+  </section>
+
+  <section id="list" class="panel list hidden" aria-label="Features in view">
+    <div class="listhead">
+      <div>
+        <div class="eyebrow">EVERYTHING IN VIEW</div>
+        <h2 id="listTitle">Features</h2>
+      </div>
+      <button class="close" data-act="close-list" aria-label="Close">×</button>
+    </div>
+    <div class="listmeta" id="listMeta"></div>
+    <div class="rows" id="rows"></div>
+  </section>
+
+  <section id="about" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <div class="modalcard">
+      <div class="eyebrow">NO PHONE REQUIRED</div>
+      <h2 id="aboutTitle">The same horizon, on your desk.</h2>
+      <p>This is the AR_Horizon field simulator. It loads the same Copernicus pack, the same
+        3,600-bin horizon and the same label rules as the Android build.</p>
+      <ul>
+        <li><b>Drag</b> to pan, <b>scroll</b> to zoom, <b>click</b> a label.</li>
+        <li>Switch viewpoints to see the Matterhorn from the ridge, the town and the Italian side.</li>
+        <li>Toggle hidden labels: places the ridge blocks are drawn dimmed on the skyline.</li>
+      </ul>
+      <p class="muted">The camera and skyline lock are not simulated here. The synthetic
+        lock test lives in <code>tools/validate_skyline_lock.py</code>. The Android app runs
+        the same data without a server.</p>
+      <div class="modalfoot">
+        <span class="attrib">30 m surface model · Copernicus GLO-30 © DLR/ESA · places © OpenStreetMap contributors (ODbL)</span>
+        <button class="primary" data-act="close-about">Back to the view</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bottom">
+    <div class="place">
+      <div class="eyebrow" id="vpEyebrow">GORNERGRAT · VALAIS</div>
+      <h1 id="vpName">Gornergrat</h1>
+      <div class="sub" id="vpSub">3,121 m eye · looking west</div>
+    </div>
+    <div class="actions">
+      <button data-act="reset" title="Reset view">Reset</button>
+      <button data-act="hidden" id="hiddenBtn" title="Toggle hidden labels">Hidden on</button>
+      <button data-act="list" title="List every feature">Features</button>
+      <button data-act="about" title="About this simulator">About</button>
+    </div>
+    <div class="hint" id="hint">drag to pan · scroll to zoom · click a label</div>
+    <div class="attrib" id="attrib">30 m surface model · Copernicus GLO-30 © DLR/ESA · places © OpenStreetMap contributors (ODbL)</div>
+  </footer>
+</main>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

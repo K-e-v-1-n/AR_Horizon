@@ -1,0 +1,133 @@
+{
+  "pack": "alps-matterhorn",
+  "viewpoint": {
+    "name": "Gornergrat",
+    "lat": 45.98331,
+    "lon": 7.7847,
+    "ground_m": 3119.6,
+    "eye_m": 3121.3
+  },
+  "camera": {
+    "heading_deg": 265.0,
+    "pitch_deg": 4.0,
+    "hfov_deg": 72.0,
+    "width": 2400,
+    "height": 1500
+  },
+  "terrain": {
+    "model": "Copernicus GLO-30",
+    "bins": 3600,
+    "max_range_km": 80.0,
+    "curvature": "R_eff = 6371 km / (1 - 0.13)"
+  },
+  "labels": [
+    {
+      "name": "Matterhorn",
+      "kind": "peak",
+      "az_deg": 265.554,
+      "elev_deg": 7.865,
+      "dist_m": 9773.7,
+      "hidden": false
+    },
+    {
+      "name": "Pic Tyndall",
+      "kind": "peak",
+      "az_deg": 264.389,
+      "elev_deg": 6.243,
+      "dist_m": 10170.3,
+      "hidden": false
+    },
+    {
+      "name": "Dent Blanche",
+      "kind": "peak",
+      "az_deg": 293.034,
+      "elev_deg": 4.821,
+      "dist_m": 14492.4,
+      "hidden": false
+    },
+    {
+      "name": "Zmuttzähne",
+      "kind": "peak",
+      "az_deg": 268.273,
+      "elev_deg": 4.33,
+      "dist_m": 10113.4,
+      "hidden": false
+    },
+    {
+      "name": "Punta Giordano",
+      "kind": "peak",
+      "az_deg": 253.947,
+      "elev_deg": 2.813,
+      "dist_m": 15085.5,
+      "hidden": false
+    },
+    {
+      "name": "Hohwänghorn",
+      "kind": "peak",
+      "az_deg": 295.942,
+      "elev_deg": 2.674,
+      "dist_m": 11572.6,
+      "hidden": false
+    },
+    {
+      "name": "Theodulhorn",
+      "kind": "peak",
+      "az_deg": 237.366,
+      "elev_deg": 2.839,
+      "dist_m": 7005.3,
+      "hidden": false
+    },
+    {
+      "name": "Tête Blanche",
+      "kind": "peak",
+      "az_deg": 271.366,
+      "elev_deg": 2.02,
+      "dist_m": 16181.1,
+      "hidden": false
+    },
+    {
+      "name": "Aiguille de la Tsa",
+      "kind": "peak",
+      "az_deg": 281.907,
+      "elev_deg": 1.432,
+      "dist_m": 20704.5,
+      "hidden": false
+    },
+    {
+      "name": "Mont Rous",
+      "kind": "peak",
+      "az_deg": 241.242,
+      "elev_deg": 1.661,
+      "dist_m": 17598.8,
+      "hidden": true
+    },
+    {
+      "name": "Laghi delle Cime Bianche",
+      "kind": "water",
+      "az_deg": 233.557,
+      "elev_deg": 1.391,
+      "dist_m": 9487.1,
+      "hidden": true
+    },
+    {
+      "name": "La Gouille",
+      "kind": "water",
+      "az_deg": 289.255,
+      "elev_deg": 2.774,
+      "dist_m": 24089.0,
+      "hidden": true
+    },
+    {
+      "name": "Lago Di Citrin",
+      "kind": "water",
+      "az_deg": 247.72,
+      "elev_deg": 1.005,
+      "dist_m": 53573.8,
+      "hidden": true
+    }
+  ],
+  "attribution": [
+    "© OpenStreetMap contributors (ODbL)",
+    "Copernicus DEM © DLR/ESA"
+  ]
+}

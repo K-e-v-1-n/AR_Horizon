@@ -1,0 +1,157 @@
+{
+  "pack": "alps-matterhorn",
+  "viewpoint": {
+    "name": "Gornergrat",
+    "lat": 45.98331,
+    "lon": 7.7847,
+    "ground_m": 3119.6,
+    "eye_m": 3121.3
+  },
+  "camera": {
+    "heading_deg": 327.0,
+    "pitch_deg": 1.0,
+    "hfov_deg": 70.0,
+    "width": 2000,
+    "height": 1250
+  },
+  "terrain": {
+    "model": "Copernicus GLO-30",
+    "bins": 3600,
+    "max_range_km": 80.0,
+    "curvature": "R_eff = 6371 km / (1 - 0.13)"
+  },
+  "labels": [
+    {
+      "name": "Weisshorn",
+      "kind": "peak",
+      "az_deg": 338.03,
+      "elev_deg": 5.533,
+      "dist_m": 14143.7,
+      "hidden": false
+    },
+    {
+      "name": "Zinalrothorn",
+      "kind": "peak",
+      "az_deg": 321.179,
+      "elev_deg": 5.352,
+      "dist_m": 11639.7,
+      "hidden": false
+    },
+    {
+      "name": "Ober Gabelhorn",
+      "kind": "peak",
+      "az_deg": 304.351,
+      "elev_deg": 4.944,
+      "dist_m": 10907.0,
+      "hidden": false
+    },
+    {
+      "name": "Bishorn",
+      "kind": "peak",
+      "az_deg": 340.249,
+      "elev_deg": 3.635,
+      "dist_m": 15906.3,
+      "hidden": false
+    },
+    {
+      "name": "Schalihorn",
+      "kind": "peak",
+      "az_deg": 331.306,
+      "elev_deg": 3.758,
+      "dist_m": 12811.1,
+      "hidden": false
+    },
+    {
+      "name": "Grand Cornier",
+      "kind": "peak",
+      "az_deg": 299.85,
+      "elev_deg": 3.09,
+      "dist_m": 15404.2,
+      "hidden": false
+    },
+    {
+      "name": "Pointe du Mountet",
+      "kind": "peak",
+      "az_deg": 316.822,
+      "elev_deg": 3.593,
+      "dist_m": 11290.5,
+      "hidden": false
+    },
+    {
+      "name": "Brunegghorn",
+      "kind": "peak",
+      "az_deg": 349.308,
+      "elev_deg": 2.465,
+      "dist_m": 16119.5,
+      "hidden": false
+    },
+    {
+      "name": "Wasuhorn",
+      "kind": "peak",
+      "az_deg": 352.607,
+      "elev_deg": 0.513,
+      "dist_m": 21311.6,
+      "hidden": false
+    },
+    {
+      "name": "Sion",
+      "kind": "town",
+      "az_deg": 310.169,
+      "elev_deg": 2.347,
+      "dist_m": 42863.4,
+      "hidden": true
+    },
+    {
+      "name": "Pointe de Bricolla",
+      "kind": "peak",
+      "az_deg": 300.656,
+      "elev_deg": 1.971,
+      "dist_m": 17306.0,
+      "hidden": true
+    },
+    {
+      "name": "P. 3405",
+      "kind": "peak",
+      "az_deg": 332.989,
+      "elev_deg": 2.418,
+      "dist_m": 18754.1,
+      "hidden": true
+    },
+    {
+      "name": "Horn",
+      "kind": "peak",
+      "az_deg": 358.97,
+      "elev_deg": 0.172,
+      "dist_m": 24360.5,
+      "hidden": true
+    },
+    {
+      "name": "Leisee",
+      "kind": "water",
+      "az_deg": 344.951,
+      "elev_deg": 1.405,
+      "dist_m": 3647.2,
+      "hidden": true
+    },
+    {
+      "name": "Lac de Moiry",
+      "kind": "water",
+      "az_deg": 314.047,
+      "elev_deg": 1.984,
+      "dist_m": 22925.0,
+      "hidden": true
+    },
+    {
+      "name": "Lac Bleu",
+      "kind": "water",
+      "az_deg": 308.216,
+      "elev_deg": 3.586,
+      "dist_m": 53983.3,
+      "hidden": true
+    }
+  ],
+  "attribution": [
+    "© OpenStreetMap contributors (ODbL)",
+    "Copernicus DEM © DLR/ESA"
+  ]
+}
