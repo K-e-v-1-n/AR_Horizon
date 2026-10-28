@@ -1,0 +1,216 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version name without the leading v (e.g. 0.1.1). Empty uses 0.1.0-dev."
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release APK and AAB
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          elif [[ -n "${INPUT_VERSION}" ]]; then
+            VERSION="${INPUT_VERSION}"
+          else
+            VERSION="0.1.0-dev"
+          fi
+          VERSION="${VERSION#v}"
+          if [[ ! "${VERSION}" =~ ^[0-9A-Za-z._+-]+$ ]]; then
+            echo "error: version may only contain letters, digits, dot, underscore, plus and hyphen" >&2
+            exit 1
+          fi
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Release version: ${VERSION}"
+
+      - name: Check release keystore
+        id: signing
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.AR_HORIZON_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.AR_HORIZON_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.AR_HORIZON_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.AR_HORIZON_KEY_PASSWORD }}
+        run: |
+          if [[ -n "${KEYSTORE_BASE64}" ]]; then
+            if [[ -z "${KEYSTORE_PASSWORD}" || -z "${KEY_ALIAS}" || -z "${KEY_PASSWORD}" ]]; then
+              echo "error: AR_HORIZON_KEYSTORE_BASE64 is set, but the keystore password, key alias or key password is missing." >&2
+              exit 1
+            fi
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Release keystore found: production signing enabled."
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "No release keystore: the build will use the debug keystore."
+          fi
+
+      - name: Decode release keystore
+        if: steps.signing.outputs.enabled == 'true'
+        shell: bash
+        env:
+          KEYSTORE_BASE64: ${{ secrets.AR_HORIZON_KEYSTORE_BASE64 }}
+        run: |
+          printf '%s' "${KEYSTORE_BASE64}" | base64 -d > "$RUNNER_TEMP/ar-horizon-release.jks"
+          echo "AR_HORIZON_KEYSTORE=$RUNNER_TEMP/ar-horizon-release.jks" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK and NDK
+        shell: bash
+        run: |
+          SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          yes | sdkmanager --sdk_root="$SDK" --licenses >/dev/null || true
+          sdkmanager --sdk_root="$SDK" --install \
+            "platforms;android-36" \
+            "build-tools;36.0.0" \
+            "ndk;27.2.12479018"
+          {
+            echo "ANDROID_HOME=$SDK"
+            echo "ANDROID_SDK_ROOT=$SDK"
+            echo "ANDROID_NDK_HOME=$SDK/ndk/27.2.12479018"
+          } >> "$GITHUB_ENV"
+          echo "sdk.dir=$SDK" > android/local.properties
+
+      - name: Build JNI libraries
+        run: bash android/build_native.sh
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Build release APK and AAB
+        working-directory: android
+        shell: bash
+        env:
+          AR_HORIZON_KEYSTORE_PASSWORD: ${{ secrets.AR_HORIZON_KEYSTORE_PASSWORD }}
+          AR_HORIZON_KEY_ALIAS: ${{ secrets.AR_HORIZON_KEY_ALIAS }}
+          AR_HORIZON_KEY_PASSWORD: ${{ secrets.AR_HORIZON_KEY_PASSWORD }}
+          AR_HORIZON_KEYSTORE_TYPE: ${{ secrets.AR_HORIZON_KEYSTORE_TYPE }}
+        run: |
+          chmod +x gradlew
+          ARGS=(
+            --no-daemon
+            :app:assembleRelease
+            :app:bundleRelease
+            :app:lintRelease
+            "-PAR_HORIZON_VERSION_NAME=${VERSION}"
+            "-PAR_HORIZON_VERSION_CODE=${{ github.run_number }}"
+          )
+          if [[ "${{ steps.signing.outputs.enabled }}" != "true" ]]; then
+            ARGS+=("-PallowDebugSigning=true")
+          fi
+          ./gradlew "${ARGS[@]}"
+
+      - name: Verify release APK
+        shell: bash
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          test -f "$APK"
+          test -f "$AAB"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK"
+          ls -lh "$APK" "$AAB"
+
+      - name: Stage release files
+        shell: bash
+        run: |
+          mkdir -p release
+          if [[ "${{ steps.signing.outputs.enabled }}" == "true" ]]; then
+            SUFFIX=""
+            SIGNING="release keystore"
+          else
+            SUFFIX="-debug-signed"
+            SIGNING="debug keystore fallback"
+          fi
+          APK_NAME="AR_Horizon-${VERSION}-release${SUFFIX}.apk"
+          AAB_NAME="AR_Horizon-${VERSION}-release${SUFFIX}.aab"
+          cp android/app/build/outputs/apk/release/app-release.apk "release/${APK_NAME}"
+          cp android/app/build/outputs/bundle/release/app-release.aab "release/${AAB_NAME}"
+          (cd release && sha256sum "${APK_NAME}" "${AAB_NAME}" > SHA256SUMS.txt)
+          {
+            echo "SIGNING=${SIGNING}"
+            echo "APK_NAME=${APK_NAME}"
+            echo "AAB_NAME=${AAB_NAME}"
+          } >> "$GITHUB_ENV"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AR_Horizon-${{ env.VERSION }}-release
+          path: release/*
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "AR_Horizon ${VERSION}"
+            echo
+            echo "Offline AR horizon labels for Android, built from \`${GITHUB_SHA}\`."
+            echo
+            echo "- **Signing:** ${SIGNING}"
+            echo "- **Version code:** ${{ github.run_number }}"
+            echo "- **APK:** \`${APK_NAME}\`"
+            echo "- **AAB:** \`${AAB_NAME}\`"
+            echo
+            echo "Install the APK with:"
+            echo
+            echo '```'
+            echo "adb install -r ${APK_NAME}"
+            echo '```'
+            echo
+            echo "The APK includes the bundled Alps pack and works offline. The AAB is for store uploads."
+            if [[ "${SIGNING}" == debug* ]]; then
+              echo
+              echo "> This release is signed with the Android debug keystore because no release keystore secrets are configured. Configure \`AR_HORIZON_KEYSTORE_BASE64\`, \`AR_HORIZON_KEYSTORE_PASSWORD\`, \`AR_HORIZON_KEY_ALIAS\` and \`AR_HORIZON_KEY_PASSWORD\` for a production-signed release."
+            fi
+          } > "$RUNNER_TEMP/release-notes.md"
+
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" \
+              --title "AR_Horizon ${VERSION}" \
+              --notes-file "$RUNNER_TEMP/release-notes.md"
+            gh release upload "$GITHUB_REF_NAME" release/* --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" release/* \
+              --title "AR_Horizon ${VERSION}" \
+              --notes-file "$RUNNER_TEMP/release-notes.md" \
+              --verify-tag
+          fi

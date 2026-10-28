@@ -91,21 +91,55 @@ The app works without a camera: it draws the same silhouette as a compass
 panorama. That is also the emulator path. ARCore adds the camera and the
 skyline lock.
 
-### GitHub CI and APK artifacts
+### GitHub CI, release builds and artifacts
 
-Two workflows are included:
+Three workflows are included:
 
 - **`.github/workflows/ci.yml`** runs the C++ suite, Python/service tests and
   the web JS check, then installs Android SDK 36 + NDK r27c, builds the JNI
-  libraries, assembles and lints the APK, and uploads
+  libraries, assembles and lints the debug APK, and uploads
   `AR_Horizon-debug-apk` as a workflow artifact.
+- **`.github/workflows/release.yml`** runs on `v*` tags (or manually from the
+  Actions tab). It builds a release APK and AAB, verifies the APK signature,
+  uploads `AR_Horizon-<version>-release`, and creates or updates the matching
+  GitHub Release with both files plus `SHA256SUMS.txt`.
 - **`.github/workflows/pages.yml`** publishes the static `web/` simulator to
   GitHub Pages on pushes to `main`/`master` (enable **Pages → Source: GitHub
   Actions** once in the repository).
 
-No signing secrets are required for CI; the artifact is a debug-signed,
-installable APK. For a release keystore, build locally with the release
-keystore configured in Android Studio/Gradle.
+To publish a release:
+
+```bash
+git tag v0.1.1
+git push origin v0.1.1
+```
+
+A manual **Release → Run workflow** run builds the same artifacts without
+creating a GitHub Release, which is useful for testing.
+
+Release signing is optional. With these repository secrets, the release is
+signed with your production keystore and named
+`AR_Horizon-<version>-release.apk`:
+
+| Secret | Value |
+|---|---|
+| `AR_HORIZON_KEYSTORE_BASE64` | Base64 of the `.jks`/`.keystore` file |
+| `AR_HORIZON_KEYSTORE_PASSWORD` | Keystore password |
+| `AR_HORIZON_KEY_ALIAS` | Key alias |
+| `AR_HORIZON_KEY_PASSWORD` | Key password |
+| `AR_HORIZON_KEYSTORE_TYPE` | Optional: `JKS` or `PKCS12` |
+
+Generate the base64 value on Windows:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("release.jks")) | Set-Clipboard
+```
+
+Without a keystore, the release workflow falls back to the Android debug
+keystore and names the files `...-release-debug-signed.apk` / `.aab`. Those are
+installable and testable, but not suitable for Play Store upload. The generated
+release notes state which signing was used.
+
 
 ### 4. Desktop build (no phone)
 
@@ -266,7 +300,7 @@ core/                  portable C++17 core, CLI, native tests, JNI
   src/core.cpp             geodesy, terrain, silhouette, solver, skyline fit
   jni/vantage_jni.cpp      JNI bridge used by Android
 web/                   desktop field simulator (no phone, no server)
-.github/workflows/     CI (tests + APK artifact) and GitHub Pages
+.github/workflows/     CI, tagged release builds, and GitHub Pages
 android/               Kotlin + Compose + ARCore app
   app/src/main/java/app/vantage/
     ar/                    ARCore session, OES renderer, skyline sampler

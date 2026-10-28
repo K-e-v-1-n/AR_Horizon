@@ -90,6 +90,7 @@ demo-location/startup GPS race.
 | Python + server tests | 17 passed |
 | Synthetic skyline lock | 5/5, max error 0.10°, score > 0.94 |
 | Android assemble | `BUILD SUCCESSFUL` |
+| Android release | APK + AAB built; debug and test-keystore signing verified |
 | Android lint | passes, 0 errors |
 | Web JS syntax | clean |
 | APK | `dist/AR_Horizon-0.1.0-debug.apk`, 83.8 MB |
